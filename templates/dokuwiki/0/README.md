@@ -1,9 +1,15 @@
 # Dokuwiki
 
-Dokuwiki is a free wiki software
+### Info
+ Dokuwiki is a free wiki software
 
-Stack based on mprasil/dokuwiki
+### Post-deploy
 
-https://hub.docker.com/r/mprasil/dokuwiki
+ Go to <ip>:<port>/install.php after deployment
+
+### Reference
+ Stack based on mprasil/dokuwiki
+  
+ https://hub.docker.com/r/mprasil/dokuwiki
 
 
