@@ -1,6 +1,6 @@
 .catalog:
   name: Dokuwiki
-  version: 2015-08-10a
+  version: 2.0
   description: |
     Dokuwiki is a free wiki software
   minimum_rancher_version: v0.56.0
@@ -10,7 +10,7 @@
 dokuwiki:
   scale: 1
   retain_ip: true
-    health_check:
+  health_check:
     port: 80
     interval: 30000
     unhealthy_threshold: 3

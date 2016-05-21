@@ -2,8 +2,8 @@
 
 Dokuwiki is a free wiki software
 
-Stack based on mprasil/dokuwiki
+Stack based on istepanov/dokuwiki
 
-https://hub.docker.com/r/mprasil/dokuwiki
+https://hub.docker.com/r/istepanov/dokuwiki
 
 
