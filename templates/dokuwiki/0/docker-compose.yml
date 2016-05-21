@@ -1,0 +1,4 @@
+dokuwiki:
+  ports:
+  - 80/tcp
+  image: mprasil/dokuwiki

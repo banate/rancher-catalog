@@ -1,0 +1,13 @@
+.catalog:
+  name: Dokuwiki
+  version: 2015-08-10a
+  description: |
+    Dokuwiki is a free wiki software
+  minimum_rancher_version: v0.56.0
+  maintainer: "Leonard Frank <dev@leonardfrank.de>"
+  uuid: dokuwiki-0
+
+dokuwiki:
+  scale: 1
+  retain_ip: true
+
