@@ -3,11 +3,19 @@ dokuwiki:
   - 80/tcp
   labels:
     io.rancher.sidekicks: dokuwiki-data
-  image: istepanov/dokuwiki
+  image: mprasil/dokuwiki
   volumes_from:
   - dokuwiki-data
 
 dokuwiki-data:
+  labels:
+    io.rancher.container.start_once: 'true'
   entrypoint:
   - /bin/true
-  image: istepanov/dokuwiki
+  image: mprasil/dokuwiki
+  volumes:
+  - /dokuwiki/data/
+  - /dokuwiki/lib/plugins/
+  - /dokuwiki/conf/
+  - /dokuwiki/lib/tpl/
+  - /var/log/
