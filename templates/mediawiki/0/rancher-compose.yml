@@ -11,6 +11,21 @@
       type: "string"
       required: true
       default: "//localhost"
+    - variable: sitename
+      description: "Name of the site"
+      label: "Sitename"
+      type: "string"
+      required: true
+      default: "MediaWiki"
+    - variable: lang
+      description: "Language of the wiki"
+      label: "Language"
+      type: "enum"
+      required: true
+      default: "en"
+      options:
+        - "en"
+        - "de"
     - variable: admin_password
       description: "Password of the admin account"
       label: "Admin password"
