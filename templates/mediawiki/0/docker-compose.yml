@@ -1,0 +1,24 @@
+db:
+  image: mysql
+  environment:
+    - MYSQL_ROOT_PASSWORD=password
+
+mediawiki:
+  image: benhutchins/mediawiki
+  links:
+    - db
+  ports:
+    - 80/tcp
+  volumes:
+    - /data
+  environment:
+    - MEDIAWIKI_SITE_NAME=MediaWiki
+    - MEDIAWIKI_SITE_LANG=en
+    - MEDIAWIKI_SITE_SERVER=${domain}
+    - MEDIAWIKI_ADMIN_USER=${admin_user}
+    - MEDIAWIKI_ADMIN_PASS=${admin_password}
+    - MEDIAWIKI_UPDATE=${update}
+    - MEDIAWIKI_SLEEP=0
+    - MEDIAWIKI_DB_USER=root
+    - MEDIAWIKI_DB_PASSWORD=password
+    - MEDIAWIKI_DB_TYPE=mysql

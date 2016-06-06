@@ -1,0 +1,42 @@
+.catalog:
+  name: "Mediawiki"
+  version: "v0.1"
+  description: "MediaWiki is a free software open source wiki package written in PHP, originally for use on Wikipedia."
+  uuid: mediawiki-0
+  minimum_rancher_version: v0.51.0
+  questions:
+    - variable: domain
+      description: "Domain of the wiki"
+      label: "Domain"
+      type: "string"
+      required: true
+      default: "//localhost"
+    - variable: admin_password
+      description: "Password of the admin account"
+      label: "Admin password"
+      type: "string"
+      required: true
+      default: "rosebud"
+    - variable: admin_user
+      description: "Username of the admin account"
+      label: "Admin username"
+      type: "string"
+      required: true
+      default: "admin"
+    - variable: update
+      description: "Run php maintenance/update.php"
+      label: "Update"
+      type: "boolean"
+      required: true
+      default: "false"
+
+mediawiki:
+  scale: 1
+  retain_ip: true
+  health_check:
+    port: 80
+    interval: 30000
+    unhealthy_threshold: 3
+    strategy: recreate
+    response_timeout: 2000
+    healthy_threshold: 2
