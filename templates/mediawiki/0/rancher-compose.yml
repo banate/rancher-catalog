@@ -6,11 +6,11 @@
   minimum_rancher_version: v0.51.0
   questions:
     - variable: domain
-      description: "Domain of the wiki"
+      description: "Domain of the wiki e.g. mywiki.domain.net"
       label: "Domain"
       type: "string"
       required: true
-      default: "//localhost"
+      default: "localhost"
     - variable: sitename
       description: "Name of the site"
       label: "Sitename"

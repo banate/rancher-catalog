@@ -12,7 +12,7 @@ mediawiki:
   volumes:
     - /data
   environment:
-    - MEDIAWIKI_SITE_SERVER=${domain}
+    - MEDIAWIKI_SITE_SERVER=//${domain}
     - MEDIAWIKI_SITE_NAME=${sitename}
     - MEDIAWIKI_SITE_LANG=${lang}
     - MEDIAWIKI_ADMIN_USER=${admin_user}
