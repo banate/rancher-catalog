@@ -1,0 +1,10 @@
+cloudcmd:
+  image: coderaiser/cloudcmd
+  ports:
+    - 8000/tcp
+  volumes:
+    - /root
+  links:
+    - ${cc_link}
+  volumes_from:
+    - ${cc_link}

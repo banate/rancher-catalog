@@ -1,0 +1,24 @@
+.catalog:
+  name: "CloudCmd"
+  version: "v0.1"
+  description: "Cloud Commander orthodox web file manager with console and editor. Will help you manage the server and work with files, directories and programs in browser from any computer, mobile or tablet."
+  uuid: cloudcmd-0
+  minimum_rancher_version: v0.51.0
+  questions:
+    - variable: "cc_link"
+      description: |
+        Service to link to and mount it's volumes.
+      label: "Link service"
+      required: false
+      type: "service"
+
+cloudcmd:
+  scale: 1
+  retain_ip: true
+  health_check:
+    port: 8000
+    interval: 30000
+    unhealthy_threshold: 3
+    strategy: recreate
+    response_timeout: 2000
+    healthy_threshold: 2
