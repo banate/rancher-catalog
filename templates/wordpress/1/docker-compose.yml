@@ -11,7 +11,7 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: example
     LB:
-        image: rancher/lb-service-haproxy:v0.7.15
+        image: rancher/lb-service-haproxy:v0.7.9
         expose:
             - 443:443/tcp
             - 80:80/tcp

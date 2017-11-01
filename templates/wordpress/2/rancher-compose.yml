@@ -1,0 +1,21 @@
+version: '2'
+catalog:
+    name: "Wordpress"
+    version: v0.2
+    description: |
+        Blog tool, publishing platform and CMS
+    minimum_rancher_version: v1.5.0
+    questions:
+        -
+            variable: DOMAIN
+            label: Domain for letsencrypt (optional)
+            type: "string"
+            required: false
+            description: "Leave blank to disable letsencrypt"
+        -
+            variable: LETSENCRYPT_MAIL
+            label: Mail for letsencrypt (optional)
+            default: "hostmaster@banate.de"
+            type: "string"
+            required: false
+            description: "Used for letsencrypt notifications"
