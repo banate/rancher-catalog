@@ -1,11 +1,12 @@
-wordpress:
-  image: wordpress
-  links:
-    - db:mysql
-  ports:
-    - 80/tcp
-
-db:
-  image: mariadb
-  environment:
-    MYSQL_ROOT_PASSWORD: example
+version: '2'
+services:
+    wordpress:
+        image: wordpress
+        links:
+          - db:mysql
+        ports:
+          - 80/tcp
+    db:
+        image: mariadb
+        environment:
+            MYSQL_ROOT_PASSWORD: example
