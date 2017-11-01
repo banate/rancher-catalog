@@ -11,7 +11,7 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: example
     LB:
-        image: rancher/lb-service-haproxy:v0.5.9
+        image: rancher/lb-service-haproxy:v0.7.15
         expose:
             - 443:443/tcp
             - 80:80/tcp
@@ -19,7 +19,7 @@ services:
             io.rancher.container.agent.role: environmentAdmin
             io.rancher.container.create_agent: 'true'
     letsencrypt:
-        image: janeczku/rancher-letsencrypt:v0.4.0
+        image: janeczku/rancher-letsencrypt:v0.5.0
         environment:
             API_VERSION: Production
             AWS_ACCESS_KEY: ''

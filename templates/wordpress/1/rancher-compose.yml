@@ -78,3 +78,4 @@ services:
     letsencrypt:
         scale: 1
         start_on_create: false
+        create_only: true
