@@ -1,0 +1,80 @@
+version: '2'
+catalog:
+    name: "Wordpress"
+    version: v0.1-letsencrypt
+    description: |
+        Blog tool, publishing platform and CMS
+    questions:
+        -
+            variable: DOMAIN
+            label: Domain for letsencrypt
+            type: "string"
+            required: true
+            description: "FQDN, e.g. docker.example.com"
+        -
+            variable: LETSENCRYPT_MAIL
+            label: Mail for letsencrypt
+            default: "hostmaster@banate.de"
+            type: "string"
+            required: true
+            description: "Used for letsencrypt notifications"
+services:
+    wordpress:
+    LB:
+        scale: 1
+        start_on_create: true
+        lb_config:
+            certs: []
+            port_rules:
+                -
+                    hostname: ${DOMAIN}
+                    path: /.well-known/acme-challenge
+                    priority: 1
+                    protocol: http
+                    service: letsencrypt
+                    source_port: 443
+                    target_port: 80
+                -
+                    hostname: ${DOMAIN}
+                    path: /.well-known/acme-challenge
+                    priority: 2
+                    protocol: http
+                    service: letsencrypt
+                    source_port: 80
+                    target_port: 80
+                -
+                    hostname: ${DOMAIN}
+                    priority: 3
+                    protocol: http
+                    service: Network/https-redirect
+                    source_port: 80
+                    target_port: 80
+                -
+                    hostname: ${DOMAIN}
+                    priority: 4
+                    protocol: http
+                    service: wordpress
+                    source_port: 443
+                    target_port: 80
+                -
+                    priority: 5
+                    protocol: http
+                    service: Network/404
+                    source_port: 443
+                    target_port: 80
+                -
+                    priority: 6
+                    protocol: http
+                    service: Network/404
+                    source_port: 80
+                    target_port: 80
+        health_check:
+            healthy_threshold: 2
+            response_timeout: 2000
+            port: 42
+            unhealthy_threshold: 3
+            interval: 2000
+            strategy: recreate
+    letsencrypt:
+        scale: 1
+        start_on_create: false

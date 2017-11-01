@@ -1,0 +1,55 @@
+version: '2'
+services:
+    wordpress:
+        image: wordpress
+        links:
+          - db:mysql
+        ports:
+          - 80/tcp
+    db:
+        image: mariadb
+        environment:
+            MYSQL_ROOT_PASSWORD: example
+    LB:
+        image: rancher/lb-service-haproxy:v0.5.9
+        expose:
+            - 443:443/tcp
+            - 80:80/tcp
+        labels:
+            io.rancher.container.agent.role: environmentAdmin
+            io.rancher.container.create_agent: 'true'
+    letsencrypt:
+        image: janeczku/rancher-letsencrypt:v0.4.0
+        environment:
+            API_VERSION: Production
+            AWS_ACCESS_KEY: ''
+            AWS_SECRET_KEY: ''
+            CERT_NAME: ${DOMAIN}
+            CLOUDFLARE_EMAIL: ''
+            CLOUDFLARE_KEY: ''
+            DNSIMPLE_EMAIL: ''
+            DNSIMPLE_KEY: ''
+            DOMAINS: ${DOMAIN}
+            DO_ACCESS_TOKEN: ''
+            DYN_CUSTOMER_NAME: ''
+            DYN_PASSWORD: ''
+            DYN_USER_NAME: ''
+            EMAIL: ${LETSENCRYPT_MAIL}
+            EULA: 'Yes'
+            GANDI_API_KEY: ''
+            OVH_APPLICATION_KEY: ''
+            OVH_APPLICATION_SECRET: ''
+            OVH_CONSUMER_KEY: ''
+            PROVIDER: HTTP
+            PUBLIC_KEY_TYPE: RSA-2048
+            RENEWAL_TIME: '12'
+            VULTR_API_KEY: ''
+        volumes:
+            - lets-encrypt:/etc/letsencrypt
+        labels:
+            io.rancher.container.agent.role: environment
+            io.rancher.container.create_agent: 'true'
+volumes:
+    lets-encrypt:
+        external: true
+        driver: 'null'
