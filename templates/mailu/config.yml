@@ -1,0 +1,8 @@
+name: Mailu
+description: |
+  Complete mailu setup (https://mailu.io/)
+version: 0.1a-complete
+category: Mail
+maintainer: "Leonard Frank <dev@leonardfrank.de>"
+license: bsd
+projectURL: https://github.com/banate/rancher-catalog/tree/master/templates/mailcow

@@ -1,0 +1,267 @@
+version: '2'
+catalog:
+  name: "Mailu complete"
+  version: "0.1-all"
+  description: "Default complete mailu"
+
+  questions:
+
+###################################
+# Common configuration variables
+###################################
+
+    - variable: ROOT
+      label: Root
+      type: "string"
+      required: true
+      default: "/mailu"
+      description: "Set this to the path where Mailu data and configuration is stored"
+
+    - variable: VERSION
+      label: Version
+      type: "string"
+      required: true
+      default: "1.5"
+      description: "Mailu version to run (1.0, 1.1, etc. or master)"
+
+    - variable: SECRET_KEY
+      label: Secret Key
+      type: "string"
+      required: true
+      default: "ChangeMeChangeMe"
+      description: "Set to a randomly generated 16 bytes string"
+
+    - variable: BIND_ADDRESS4
+      label: IPv4 Bind Address
+      type: "string"
+      required: true
+      default: "127.0.0.1"
+      description: "Address where listening ports should bind"
+
+    - variable: BIND_ADDRESS6
+      label: IPv6 Bind Address
+      type: "string"
+      required: true
+      default: "::1"
+      description: "Address where listening ports should bind"
+
+    - variable: DOMAIN
+      label: Domain
+      type: "string"
+      required: true
+      default: "mailu.io"
+      description: "Main mail domain"
+
+    - variable: HOSTNAMES
+      label: Hostnames
+      type: "string"
+      required: true
+      default: "mail.mailu.io,alternative.mailu.io,yetanother.mailu.io"
+      description: "Hostnames for this server, separated with comas"
+
+    - variable: POSTMASTER
+      label: Postmaster
+      type: "string"
+      required: true
+      default: "admin"
+      description: "Postmaster local part (will append the main mail domain)"
+
+    - variable: TLS_FLAVOR
+      label: TLS Flavor
+      required: true
+      type: "enum"
+      default: "cert"
+      options:
+        - "letsencrypt"
+        - "cert"
+        - "notls"
+      description: "Choose how secure connections will behave"
+
+    - variable: AUTH_RATELIMIT
+      label: Auth Rate Limit
+      type: "string"
+      required: true
+      default: "10/minute;1000/hour"
+      description: "Authentication rate limit (per source IP address)"
+
+    - variable: DISABLE_STATISTICS
+      label: Disable Statistics
+      required: true
+      type: "enum"
+      default: "False"
+      options:
+        - "False"
+        - "True"
+      description: "Opt-out of statistics, replace with True to opt out"
+
+###################################
+# Optional features
+###################################
+
+    - variable: ADMIN
+      label: Admin Interface
+      required: true
+      type: "boolean"
+      default: "false"
+      description: "Expose the admin interface"
+
+    - variable: WEBMAIL
+      label: Webmail
+      required: true
+      type: "enum"
+      default: "none"
+      options:
+        - "roundcube"
+        - "rainloop"
+        - "none"
+      description: "Choose which webmail to run if any"
+
+    - variable: WEBDAV
+      label: Webdav Implementation
+      required: true
+      type: "enum"
+      default: "none"
+      options:
+        - "radicale"
+        - "none"
+      description: "Dav server implementation"
+
+    - variable: ANTIVIRUS
+      label: Antivirus Solution
+      required: true
+      type: "enum"
+      default: "none"
+      options:
+        - "clamav"
+        - "none"
+      description: "Antivirus solution"
+
+###################################
+# Mail settings
+###################################
+
+    - variable: MESSAGE_SIZE_LIMIT
+      label: Message Size Limit
+      type: "int"
+      required: true
+      default: 50000000
+      description: "Message size limit in bytes. Default: accept messages up to 50MB"
+
+    - variable: RELAYNETS
+      label: Relay Networks
+      type: "string"
+      required: true
+      default: "172.16.0.0/12"
+      description: "Networks granted relay permissions, make sure that you include your Docker internal network (default to 172.17.0.0/16)"
+
+    - variable: RELAYHOST
+      label: Relay Host
+      type: "string"
+      required: false
+      default: ""
+      description: "Will relay all outgoing mails if configured"
+
+    - variable: FETCHMAIL_DELAY
+      label: Fetchmail Delay
+      type: "int"
+      required: true
+      default: 600
+      description: "Fetchmail delay"
+
+    - variable: RECIPIENT_DELIMITER
+      label: Recipient Delimiter
+      type: "string"
+      required: true
+      default: "+"
+      description: "Recipient delimiter, character used to delimiter localpart from custom address part e.g. localpart+custom@domain;tld"
+
+    - variable: DMARC_RUA
+      label: DMARC RUA Email
+      type: "string"
+      required: true
+      default: "admin"
+      description: "DMARC rua email"
+
+    - variable: DMARC_RUF
+      label: DMARC RUF Email
+      type: "string"
+      required: true
+      default: "admin"
+      description: "DMARC ruf email"
+
+###################################
+# Web settings
+###################################
+
+    - variable: WEB_ADMIN
+      label: Webadmin Path
+      type: "string"
+      required: true
+      default: "/admin"
+      description: "Path to the admin interface if enabled"
+
+    - variable: WEB_WEBMAIL
+      label: Webmail Path
+      type: "string"
+      required: true
+      default: "/webmail"
+      description: "Path to the webmail if enabled"
+
+    - variable: SITENAME
+      label: Website Name
+      type: "string"
+      required: true
+      default: "Mailu"
+      description: "Website name"
+
+    - variable: WEBSITE
+      label: Website URL
+      type: "string"
+      required: true
+      default: "https://mailu.io"
+      description: "Linked Website URL"
+
+###################################
+# Advanced settings
+###################################
+
+    - variable: COMPOSE_PROJECT_NAME
+      label: TODO
+      type: "string"
+      required: true
+      default: "mailu"
+      description: "Docker-compose project name, this will prepended to containers names."
+
+    - variable: PASSWORD_SCHEME
+      label: Password Scheme
+      required: true
+      type: "enum"
+      default: "SHA512-CRYPT"
+      options:
+        - "SHA512-CRYPT"
+        - "SHA256-CRYPT"
+        - "MD5-CRYPT"
+        - "CRYPT"
+      description: "Default password scheme used for newly created accounts and changed passwords"
+
+services:
+  front:
+    scale: 1
+  redis:
+    scale: 1
+  imap:
+    scale: 1
+  smtp:
+    scale: 1
+  antispam:
+    scale: 1
+  antivirus:
+    scale: 1
+  webdav:
+    scale: 1
+  admin:
+    scale: 1
+  webmail:
+    scale: 1
+  fetchmail:
+    scale: 1
