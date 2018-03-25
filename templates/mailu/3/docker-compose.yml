@@ -1,0 +1,374 @@
+version: '2'
+services:
+ http:
+    image: mailu/$FRONTEND:${VERSION}
+    restart: always
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+#     LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+     LETSENCRYPT_HOST: ${VIRTUAL_HOST}
+     VIRTUAL_HOST: ${VIRTUAL_HOST}
+     VIRTUAL_PORT: ${VIRTUAL_PORT}
+     VIRTUAL_PROTO: ${VIRTUAL_PROTO}
+     WEBDAV: ${WEBDAV}
+    volumes:
+      - "{{ .Stack.Name }}-certs:/certs"
+ redis:
+    image: redis:3
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    restart: always
+    volumes:
+      - "{{ .Stack.Name }}-redis:/data"
+ imap:
+    image: mailu/dovecot:${VERSION}
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    restart: always
+    ports:
+      - "110" #pop3
+      - "143" #imap
+      - "993" #imaps
+      - "995" #pop3s
+      - "4190" #managesieve
+    volumes:
+      - "{{ .Stack.Name }}-data:/data"
+      - "{{ .Stack.Name }}-mail:/mail"
+      - "{{ .Stack.Name }}-certs:/certs"
+      - "{{ .Stack.Name }}-overrides:/overrides"
+ smtp:
+    image: mailu/postfix:${VERSION}
+    restart: always
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    ports:
+      - "25" #smtp
+      - "465" #smtp over ssl
+      - "587" #smtp (message submission agent)
+    volumes:
+      - "{{ .Stack.Name }}-data:/data"
+      - "{{ .Stack.Name }}-certs:/certs"
+      - "{{ .Stack.Name }}-overrides:/overrides"
+ milter:
+    image: mailu/rmilter:${VERSION}
+    labels:
+     io.rancher.container.pull_image: always
+    restart: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    volumes:
+      - "{{ .Stack.Name }}-filter:/data"
+      - "{{ .Stack.Name }}-dkim:/dkim"
+      - "{{ .Stack.Name }}-overrides:/overrides"
+ antispam:
+    image: mailu/rspamd:${VERSION}
+    restart: always
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    volumes:
+      - "{{ .Stack.Name }}-filter:/var/lib/rspamd"
+ antivirus:
+    image: mailu/clamav:${VERSION}
+    restart: always
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    volumes:
+      - "{{ .Stack.Name }}-filter:/data"
+ admin:
+    image: mailu/admin:${VERSION}
+    restart: always
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    ports:
+      - "80"
+    volumes:
+      - "{{ .Stack.Name }}-data:/data"
+      - "{{ .Stack.Name }}-dkim:/dkim"
+      - "{{ .Stack.Name }}-certs:/certs"
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+ webmail:
+    image: "mailu/${WEBMAIL}:${VERSION}"
+    restart: always
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    volumes:
+      - "{{ .Stack.Name }}-webmail:/data"
+ fetchmail:
+    image: mailu/fetchmail:${VERSION}
+    restart: always
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    volumes:
+      - "{{ .Stack.Name }}-data:/data"
+ webdav:
+    image: mailu/$WEBDAV:$VERSION
+    restart: always
+    labels:
+     io.rancher.container.pull_image: always
+    environment:
+     FETCHMAIL_KEEP: ${FETCHMAIL_KEEP}
+     BIND_ADDRESS: 0.0.0.0 #${BIND_ADDRESS}
+     COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+     DEBUG: ${DEBUG}
+     DOMAIN: ${DOMAIN}
+     ENABLE_CERTBOT: False #${ENABLE_CERTBOT}
+     EXPOSE_ADMIN: ${EXPOSE_ADMIN}
+     FETCHMAIL_DELAY: ${FETCHMAIL_DELAY}
+     FRONTEND: nginx-no-https #${FRONTEND}
+     HOSTNAME: ${HOSTNAME}
+     MESSAGE_SIZE_LIMIT: ${MESSAGE_SIZE_LIMIT}
+     POSTMASTER: ${POSTMASTER}
+     RELAYHOST: ${RELAYHOST}
+     RELAYNETS: ${RELAYNETS}
+     #ROOT: ${ROOT}
+     SECRET_KEY: ${SECRET_KEY}
+     VERSION: ${VERSION}
+     WEBMAIL: ${WEBMAIL}
+     WEBDAV: ${WEBDAV}
+    volumes:
+      - "{{ .Stack.Name }}-dav:/data"
+
+
+    LB:
+        image: rancher/lb-service-haproxy:v0.5.9
+        expose:
+            - 443:443/tcp
+            - 80:80/tcp
+        labels:
+            io.rancher.container.agent.role: environmentAdmin
+            io.rancher.container.create_agent: 'true'
+    letsencrypt:
+        image: janeczku/rancher-letsencrypt:v0.4.0
+        environment:
+            API_VERSION: Production
+            AWS_ACCESS_KEY: ''
+            AWS_SECRET_KEY: ''
+            CERT_NAME: ${DOMAIN}
+            CLOUDFLARE_EMAIL: ''
+            CLOUDFLARE_KEY: ''
+            DNSIMPLE_EMAIL: ''
+            DNSIMPLE_KEY: ''
+            DOMAINS: ${DOMAIN}
+            DO_ACCESS_TOKEN: ''
+            DYN_CUSTOMER_NAME: ''
+            DYN_PASSWORD: ''
+            DYN_USER_NAME: ''
+            EMAIL: hostmaster@banate.de
+            EULA: 'Yes'
+            GANDI_API_KEY: ''
+            OVH_APPLICATION_KEY: ''
+            OVH_APPLICATION_SECRET: ''
+            OVH_CONSUMER_KEY: ''
+            PROVIDER: HTTP
+            PUBLIC_KEY_TYPE: RSA-2048
+            RENEWAL_TIME: '12'
+            VULTR_API_KEY: ''
+        volumes:
+            - {{ .Stack.Name }}-lets-encrypt:/etc/letsencrypt
+        labels:
+            io.rancher.container.agent.role: environment
+            io.rancher.container.create_agent: 'true'
+    cert-init:
+        image: busybox
+        command: "ln /etc/letsencrypt/production/certs/${DOMAIN}/privkey.pem /certs/key.pem && ln /etc/letsencrypt/production/certs/${DOMAIN}/fullchain.pem cert.pem"
+        volumes:
+            - {{ .Stack.Name }}-lets-encrypt:/etc/letsencrypt
+            - {{ .Stack.Name }}-certs:/certs
+        labels:
+            io.rancher.container.start_once: 'true'
