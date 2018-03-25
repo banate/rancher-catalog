@@ -1,26 +1,8 @@
-smtp:
-  scale: 1
-antivirus:
-  scale: 1
-webmail:
-  scale: 1
-redis:
-  scale: 1
-imap:
-  scale: 1
-http:
-  scale: 1
-antispam:
-  scale: 1
-admin:
-  scale: 1
-milter:
-  scale: 1
-fetchmail:
-  scale: 1
+version: '2'
 .catalog:
- name: "Initial Version"
- version: "v0.0.1"
+ name: "Supporting Compose v2"
+ minimun_rancher_version: 1.2.0
+ version: "v0.0.2"
  questions:
   - variable: VIRTUAL_HOST
     label: "Mail Server Virtual Host"
@@ -147,6 +129,11 @@ fetchmail:
   - variable: FETCHMAIL_DELAY
     label: "Fetchmail delay"
     default: "600"
+    type: string
+  - variable: FETCHMAIL_KEEP
+    label: "Fetchmail keep option"
+    description: "Set this to True when you want to keep the mail on remote server as well"
+    default: "False"
     type: string
   - variable: DEBUG
     label: "Enable Debug"

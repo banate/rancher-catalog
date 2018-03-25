@@ -1,26 +1,8 @@
-smtp:
-  scale: 1
-antivirus:
-  scale: 1
-webmail:
-  scale: 1
-redis:
-  scale: 1
-imap:
-  scale: 1
-http:
-  scale: 1
-antispam:
-  scale: 1
-admin:
-  scale: 1
-milter:
-  scale: 1
-fetchmail:
-  scale: 1
+version: '2'
 .catalog:
- name: "Initial Version"
- version: "v0.0.1"
+ name: "Supporting Compose v2"
+ minimun_rancher_version: 1.2.0
+ version: "v0.0.3"
  questions:
   - variable: VIRTUAL_HOST
     label: "Mail Server Virtual Host"
@@ -36,7 +18,7 @@ fetchmail:
     label: "Mail Server Virtual Proto"
     description: "Input only if you use jwilder/nginx ( not sure it is usefull )"
     default: "https"
-    type: string  
+    type: string
   - variable: LETSENCRYPT_EMAIL
     label: "Lets's Encrypt Email"
     description: "Input only if you use jwilder/nginx - Email use to create let's encrypt certificate"
@@ -92,16 +74,17 @@ fetchmail:
     label: "Frontend web server"
     description: "Choose which frontend Web server to run if any (value: nginx, none)"
     default: "nginx"
-    type: enum   
-    options: 
+    type: enum
+    options:
         - "nginx"
+        - "nginx-no-https"
         - "none"
   - variable: WEBMAIL
     label: "Webmail server type"
     description: "Choose which webmail to run if any (values: roundcube, rainloop, none)"
     default: "roundcube"
-    type: enum   
-    options: 
+    type: enum
+    options:
         - "roundcube"
         - "rainloop"
         - "none"
@@ -109,24 +92,24 @@ fetchmail:
     label: "Expose administration"
     description: "Expose the admin interface in publicly (values: yes, no)"
     default: "yes"
-    type: enum   
-    options: 
+    type: enum
+    options:
         - "yes"
         - "no"
   - variable: ENABLE_CERTBOT
     label: "Use Certbot to generate a TLS cert"
     description: "Use Letsencrypt to generate a TLS certificate (True to enable)"
     default: "False"
-    type: enum   
-    options: 
+    type: enum
+    options:
         - "True"
         - "False"
   - variable: WEBDAV
     label: "Dav server"
     description: "Dav server implementation (value: radicale, none)"
     default: "none"
-    type: enum   
-    options: 
+    type: enum
+    options:
         - "none"
         - "radicale"
   - variable: MESSAGE_SIZE_LIMIT
@@ -148,10 +131,15 @@ fetchmail:
     label: "Fetchmail delay"
     default: "600"
     type: string
+  - variable: FETCHMAIL_KEEP
+    label: "Fetchmail keep option"
+    description: "Set this to True when you want to keep the mail on remote server as well"
+    default: "False"
+    type: string
   - variable: DEBUG
     label: "Enable Debug"
     default: "False"
-    type: enum   
-    options: 
+    type: enum
+    options:
         - "True"
         - "False"
