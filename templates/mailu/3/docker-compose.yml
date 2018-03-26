@@ -375,7 +375,7 @@ services:
       io.rancher.container.create_agent: 'true'
   cert-init:
     image: busybox
-    command: "ln /etc/letsencrypt/production/certs/${DOMAIN}/privkey.pem /certs/key.pem && ln /etc/letsencrypt/production/certs/${DOMAIN}/fullchain.pem cert.pem"
+    command: "ln /etc/letsencrypt/production/certs/${DOMAIN}/privkey.pem /certs/key.pem && ln /etc/letsencrypt/production/certs/${DOMAIN}/fullchain.pem /certs/cert.pem"
     volumes:
       - {{ .Stack.Name }}-lets-encrypt:/etc/letsencrypt
       - {{ .Stack.Name }}-certs:/certs
