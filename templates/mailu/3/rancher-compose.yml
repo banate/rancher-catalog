@@ -4,21 +4,21 @@ version: '2'
   minimun_rancher_version: 1.2.0
   version: "v0.0.3b"
   questions:
-    - variable: VIRTUAL_HOST
-      label: "Mail Server Virtual Host"
-      description: "Input only if you use jwilder/nginx"
-      default: "mail.mailu.io"
-      type: string
-    - variable: VIRTUAL_PORT
-      label: "Mail Server Virtual Port"
-      description: "Input only if you use jwilder/nginx"
-      default: "443"
-      type: string
-    - variable: VIRTUAL_PROTO
-      label: "Mail Server Virtual Proto"
-      description: "Input only if you use jwilder/nginx ( not sure it is usefull )"
-      default: "https"
-      type: string
+  #  - variable: VIRTUAL_HOST
+  #     label: "Mail Server Virtual Host"
+  #     description: "Input only if you use jwilder/nginx"
+  #     default: "mail.mailu.io"
+  #     type: string
+  #  -  variable: VIRTUAL_PORT
+  #     label: "Mail Server Virtual Port"
+  #     description: "Input only if you use jwilder/nginx"
+  #     default: "443"
+  #     type: string
+  #  -  variable: VIRTUAL_PROTO
+  #     label: "Mail Server Virtual Proto"
+  #     description: "Input only if you use jwilder/nginx ( not sure it is usefull )"
+  #     default: "https"
+  #     type: string
   #  - variable: LETSENCRYPT_EMAIL
   #    label: "Lets's Encrypt Email"
   #    description: "Input only if you use jwilder/nginx - Email use to create let's encrypt certificate"
@@ -40,9 +40,8 @@ version: '2'
     - variable: SECRET_KEY
       label: "Mailu Secret Key"
       description: "Set to a randomly generated 16 bytes string"
-      default: "ChangeMeChangeMe"
       required: true
-      type: string
+      type: password
   #   - variable: BIND_ADDRESS
   #    label: "Mailu bind address"
   #    description: "Address where listening ports should bind"
@@ -65,12 +64,12 @@ version: '2'
       default: "admin"
       required: true
       type: string
-    - variable: COMPOSE_PROJECT_NAME
-      label: "Docker-compose project name"
-      description: "Docker-compose project name, this will prepended to containers names."
-      default: "mailu"
-      required: true
-      type: string
+  #  - variable: COMPOSE_PROJECT_NAME
+  #     label: "Docker-compose project name"
+  #     description: "Docker-compose project name, this will prepended to containers names."
+  #     default: "mailu"
+  #     required: true
+  #     type: string
   #  - variable: FRONTEND
   #    label: "Frontend web server"
   #    description: "Choose which frontend Web server to run if any (value: nginx, none)"
