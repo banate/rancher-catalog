@@ -1,7 +1,7 @@
 version: '2'
 services:
   http:
-    image: mailu/$FRONTEND:${VERSION}
+    image: mailu/nginx-no-https:${VERSION} #$FRONTEND:${VERSION}
     restart: always
     labels:
       io.rancher.container.pull_image: always
