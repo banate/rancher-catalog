@@ -24,7 +24,7 @@ version: '2'
       label: "Gitlab external_url prefix:"
       description: |
         This is needed for the docker-compose file to set the correct external_url
-      default: 'http://'
+      default: 'https://'
       required: true
       type: "enum"
       options:
@@ -33,8 +33,7 @@ version: '2'
     - variable: "ssh_port"
       description: "SSH port to expose on host. Will be used to bind TCP"
       label: "SSH port:"
-      required: true
-      default: 222
+      required: false
       type: "int"
     - variable: "volumedriver"
       description: "Choose the Volume Driver being used.(Option: local or rancher-nfs)"

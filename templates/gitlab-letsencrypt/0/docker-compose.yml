@@ -10,7 +10,11 @@ volumes:
 services:
   gitlab-server:
     ports:
+    {{- if ne .Values.ssh_port "" }}
+    - ${ssh_port}:22/tcp
+    {{- else }}
     - 22/tcp
+    {{- end }}
     - 80/tcp
     - 443/tcp
     labels:
