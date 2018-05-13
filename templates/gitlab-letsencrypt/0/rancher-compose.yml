@@ -1,0 +1,127 @@
+version: '2'
+.catalog:
+  name: Gitlab Community
+  version: 9.5.10-ce.0
+  description: |
+    Gitlab CE is a free GitHub alternative
+  minimum_rancher_version: v0.56.0
+  maintainer: "Alexis Ducastel <alexis@ducastel.net>"
+  uuid: gitlab-0
+  questions:
+    - variable: "gitlab_hostname"
+      description: "Gitlab hostname (without uri scheme http:// or https://)"
+      label: "Hostname:"
+      required: true
+      default: "git.example.com"
+      type: "string"
+    - variable: "registry_gitlab_hostname"
+      description: "Registry Gitlab hostname (without uri scheme http:// or https://)"
+      label: "Registry hostname:"
+      required: true
+      default: "registry.example.com"
+      type: "string"
+    - variable: "gitlab_omnipus_prefix"
+      label: "Gitlab external_url prefix:"
+      description: |
+        This is needed for the docker-compose file to set the correct external_url
+      default: 'http://'
+      required: true
+      type: "enum"
+      options:
+        - 'http://'
+        - 'https://'
+    - variable: "ssh_port"
+      description: "SSH port to expose on host. Will be used to bind TCP"
+      label: "SSH port:"
+      required: true
+      default: 222
+      type: "int"
+    - variable: "volumedriver"
+      description: "Choose the Volume Driver being used.(Option: local or rancher-nfs)"
+      label: "Volume Driver:"
+      required: true
+      default: local
+      type: "enum"
+      options:
+        - local
+        - rancher-nfs
+
+services:
+  gitlab-server:
+    scale: 1
+    retain_ip: true
+    health_check:
+      port: 80
+      interval: 30000
+      unhealthy_threshold: 3
+      strategy: recreate
+      response_timeout: 3000
+      healthy_threshold: 2
+
+  letsencrypt:
+    scale: 1
+    start_on_create: false
+
+  LB:
+    scale: 1
+    start_on_create: true
+    lb_config:
+      certs: []
+      port_rules:
+        - hostname: ${gitlab_hostname}
+          path: /.well-known/acme-challenge
+          priority: 2
+          protocol: http
+          service: letsencrypt
+          source_port: 80
+          target_port: 80
+        - hostname: ${registry_gitlab_hostname}
+          path: /.well-known/acme-challenge
+          priority: 2
+          protocol: http
+          service: letsencrypt
+          source_port: 80
+          target_port: 80
+        - hostname: ${gitlab_hostname}
+          priority: 3
+          protocol: http
+          service: Network/https-redirect
+          source_port: 80
+          target_port: 80
+        - hostname: ${gitlab_hostname}
+          priority: 4
+          protocol: http
+          service: gitlab-server
+          source_port: 443
+          target_port: 80
+        - hostname: ${registry_gitlab_hostname}
+          priority: 3
+          protocol: http
+          service: Network/https-redirect
+          source_port: 80
+          target_port: 80
+        - hostname: ${registry_gitlab_hostname}
+          priority: 4
+          protocol: http
+          service: gitlab-server
+          source_port: 443
+          target_port: 80
+        - priority: 5
+          protocol: http
+          service: Network/404
+          source_port: 443
+          target_port: 80
+        - priority: 6
+          protocol: http
+          service: Network/404
+          source_port: 80
+          target_port: 80
+    health_check:
+      healthy_threshold: 2
+      response_timeout: 2000
+      port: 42
+      unhealthy_threshold: 3
+      interval: 2000
+      strategy: recreate
+
+
